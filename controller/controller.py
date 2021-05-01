@@ -16,5 +16,6 @@ class Controller:
 
         self.view = View(self)
 
+
     def run(self):
         self.window.mainloop()
