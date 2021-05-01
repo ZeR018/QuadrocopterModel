@@ -45,7 +45,7 @@ class View:
         inicialTab = ttk.Frame(tabControl)
 
         tabControl.add(inicialTab, text='Params')
-        tabControl.add(stabilizationTab, text='Graphics')
+        tabControl.add(stabilizationTab, text='Stabilization')
         tabControl.pack(expand=1, fill="both")
 
         # Первый фрейм
