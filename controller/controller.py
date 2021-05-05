@@ -19,3 +19,6 @@ class Controller:
 
     def run(self):
         self.window.mainloop()
+
+    def stop_model(self):
+        print('stop model')

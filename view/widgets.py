@@ -13,13 +13,36 @@ class Widgets:
 
     def _create_widgets(self, frame):
 
-        frame_parameters = tk.LabelFrame(frame, bg="gray94", text="Parameters")
-        frame_parameters.place(relheight=0.25, relwidth=0.29, relx=0.02, rely=0.2)
-        self._create_parameter_entries(frame_parameters)
-
         frame_ax = tk.Frame(frame)
         frame_ax.place(relheight=0.95, relwidth=0.65, relx=0.33, rely=0.02)
         self._create_ax(frame_ax)
+
+        frame_buttons = tk.Frame(frame, bg="gray94")
+        frame_buttons.place(relheight=0.1, relwidth=0.29, relx=0.02, rely=0.9)
+        self._create_buttons(frame_buttons)
+
+        frame_graphic_radio = tk.Frame(frame, bg="gray94")
+        frame_graphic_radio.place(relheight=0.3, relwidth=0.3, relx=0.02, rely=0.55)
+        self._create_graphics_selection_buttons(frame_graphic_radio)
+
+    def _create_graphics_selection_buttons(self, master):
+        self.view.var_graphic = tk.StringVar()
+        self.view.var_graphic.set("Graphic 1")
+
+        radio_graphic1 = tk.Radiobutton(master, text="Graphic 1", font=15,
+                                           variable=self.view.var_graphic,
+                                           value="Graphic 1")
+        radio_graphic1.place(relx=0.15, rely=0.03)
+
+        radio_graphic2 = tk.Radiobutton(master, text="Graphic 2", font=15,
+                                       variable=self.view.var_graphic,
+                                       value="Graphic 2")
+        radio_graphic2.place(relx=0.15, rely=0.33)
+
+        radio_graphic3 = tk.Radiobutton(master, text="Graphic 3", font=15,
+                                        variable=self.view.var_graphic,
+                                        value="Graphic 3")
+        radio_graphic3.place(relx=0.15, rely=0.63)
 
     def _create_ax(self, master):
         fig = plt.figure()
@@ -29,42 +52,130 @@ class Widgets:
         self.view.canvas.get_tk_widget().pack(fill=tk.BOTH)
         self.view.canvas.draw()
 
-    def _create_parameter_entries(self, master):
-        self.view.var_a = tk.StringVar()
-        self.view.var_b = tk.StringVar()
-        self.view.var_c = tk.StringVar()
-        self.view.var_d = tk.StringVar()
-        self.view.var_x1 = tk.StringVar()
-        self.view.var_x2 = tk.StringVar()
+    def _create_buttons(self, master):
+        self.view.button_start = tk.Button(master, text="Start", font=15, bg="white",
+                                           command=self.view._click_button_start)
+        self.view.button_start.place(relwidth=0.3, relx=0.0)
 
-        l_a = tk.Label(master, text="a = ", font=12)
-        l_a.place(relheight=0.2, relwidth=0.15, relx=0.02, rely=0.08)
-        entry_a = tk.Entry(master, textvariable=self.view.var_a, font=15)
-        entry_a.place(relheight=0.2, relwidth=0.31, relx=0.15, rely=0.08)
+        self.view.button_stop = tk.Button(master, text="Stop", font=15, bg="white",
+                                          command=self.view._click_button_stop, state=tk.DISABLED)
+        self.view.button_stop.place(relwidth=0.3, relx=0.33)
 
-        l_b = tk.Label(master, text="b = ", font=12)
-        l_b.place(relheight=0.2, relwidth=0.15, relx=0.50, rely=0.08)
-        entry_b = tk.Entry(master, textvariable=self.view.var_b, font=15)
-        entry_b.place(relheight=0.2, relwidth=0.31, relx=0.62, rely=0.08)
-
-        l_c = tk.Label(master, text="c = ", font=12)
-        l_c.place(relheight=0.2, relwidth=0.15, relx=0.02, rely=0.38)
-        entry_c = tk.Entry(master, textvariable=self.view.var_c, font=15)
-        entry_c.place(relheight=0.2, relwidth=0.31, relx=0.15, rely=0.38)
-
-        l_d = tk.Label(master, text="d = ", font=12)
-        l_d.place(relheight=0.2, relwidth=0.15, relx=0.50, rely=0.38)
-        entry_d = tk.Entry(master, textvariable=self.view.var_d, font=15)
-        entry_d.place(relheight=0.2, relwidth=0.31, relx=0.62, rely=0.38)
-
-        l_x1 = tk.Label(master, text="x1 = ", font=12)
-        l_x1.place(relheight=0.2, relwidth=0.15, relx=0.009, rely=0.68)
-        entry_x1 = tk.Entry(master, textvariable=self.view.var_x1, font=15)
-        entry_x1.place(relheight=0.2, relwidth=0.31, relx=0.15, rely=0.68)
-
-        l_x2 = tk.Label(master, text="x2 = ", font=12)
-        l_x2.place(relheight=0.2, relwidth=0.15, relx=0.489, rely=0.68)
-        entry_x2 = tk.Entry(master, textvariable=self.view.var_x2, font=15)
-        entry_x2.place(relheight=0.2, relwidth=0.31, relx=0.62, rely=0.68)
+        self.view.button_show = tk.Button(master, text="Show", font=15, bg="white",
+                                          command=self.view._click_show_result, state=tk.DISABLED)
+        self.view.button_show.place(relwidth=0.3, relx=0.66)
 
 
+class StabilizationForm:
+
+    def __init__(self, view, frame):
+        self.view = view
+        self._create_widgets(frame)
+
+    def _create_widgets(self, frame):
+        #параметры
+        self.view.var_k11 = tk.StringVar()
+        self.view.var_k22 = tk.StringVar()
+        self.view.var_k33 = tk.StringVar()
+        self.view.var_k14 = tk.StringVar()
+        self.view.var_k25 = tk.StringVar()
+        self.view.var_k36 = tk.StringVar()
+
+        stabilization_frame = ttk.LabelFrame(frame, text='Stabilization matrix')
+        stabilization_frame.place(relheight=0.8, relwidth=0.77, relx=0.02, rely=0.1)
+
+        tk.Label(stabilization_frame, text='k11 =', font=15).grid(
+            row=0, column=0, padx=5, pady=5, sticky='wn')
+        tk.Entry(stabilization_frame, textvariable=self.view.var_k11, font=15, width=8).grid(
+            row=0, column=1)
+
+        tk.Label(stabilization_frame, text='k22 =', font=15).grid(
+            row=1, column=2)
+        tk.Entry(stabilization_frame, textvariable=self.view.var_k22, font=15, width=8).grid(
+            row=1, column=3)
+
+        tk.Label(stabilization_frame, text='k33 =', font=15).grid(
+            row=2, column=4)
+        tk.Entry(stabilization_frame, textvariable=self.view.var_k33, font=15, width=8).grid(
+            row=2, column=5)
+
+        tk.Label(stabilization_frame, text='k14 =', font=15).grid(
+            row=0, column=6)
+        tk.Entry(stabilization_frame, textvariable=self.view.var_k14, font=15, width=8).grid(
+            row=0, column=7)
+
+        tk.Label(stabilization_frame, text='k25 =', font=15).grid(
+            row=1, column=8)
+        tk.Entry(stabilization_frame, textvariable=self.view.var_k25, font=15, width=8).grid(
+            row=1, column=9)
+
+        tk.Label(stabilization_frame, text='k36 =', font=15).grid(
+            row=2, column=10, padx=5, pady=5, sticky='se')
+        tk.Entry(stabilization_frame, textvariable=self.view.var_k36, font=15, width=8).grid(
+            row=2, column=11)
+
+
+class ParamsForm:
+    def __init__(self, view, frame):
+        self.view = view
+        self._create_widgets(frame)
+
+    def _create_widgets(self, frame):
+
+        self.view.var_x = tk.StringVar()
+        self.view.var_y = tk.StringVar()
+        self.view.var_z = tk.StringVar()
+        self.view.var_phi = tk.StringVar()
+        self.view.var_tetha = tk.StringVar()
+        self.view.var_psi = tk.StringVar()
+        self.view.var_dt = tk.StringVar()
+
+
+        initial_frame = ttk.LabelFrame(frame, text='Initial conditions')
+        initial_frame.place(relheight=0.8, relwidth=0.77, relx=0.02, rely=0.1)
+
+        #phi, tetha, psi
+
+        tk.Label(initial_frame, text='phi =', font=15).grid(
+            row=0, column=0, padx=15, pady=5, sticky='wn')
+        tk.Entry(initial_frame, textvariable=self.view.var_phi, font=15, width=12).grid(
+            row=0, column=1)
+
+        tk.Label(initial_frame, text='theta =', font=15).grid(
+            row=1, column=0)
+        tk.Entry(initial_frame, textvariable=self.view.var_tetha, font=15, width=12).grid(
+            row=1, column=1)
+
+        tk.Label(initial_frame, text='psi =', font=15).grid(
+            row=2, column=0, padx=15, pady=5, sticky='se')
+        tk.Entry(initial_frame, textvariable=self.view.var_psi, font=15, width=12).grid(
+            row=2, column=1)
+
+        # x y z
+
+        tk.Label(initial_frame, text='x =', font=15).grid(
+            row=0, column=2, padx=15, pady=5, sticky='wn')
+        tk.Entry(initial_frame, textvariable=self.view.var_x, font=15, width=12).grid(
+            row=0, column=3)
+
+        tk.Label(initial_frame, text='y =', font=15).grid(
+            row=1, column=2)
+        tk.Entry(initial_frame, textvariable=self.view.var_y, font=15, width=12).grid(
+            row=1, column=3)
+
+        tk.Label(initial_frame, text='z =', font=15).grid(
+            row=2, column=2, padx=15, pady=5, sticky='se')
+        tk.Entry(initial_frame, textvariable=self.view.var_z, font=15, width=12).grid(
+            row=2, column=3)
+
+        # dt
+
+        tk.Label(initial_frame, text='dt =', font=15).grid(
+            row=0, column=4, padx=15, pady=5, sticky='se')
+        tk.Entry(initial_frame, textvariable=self.view.var_dt, font=15, width=12).grid(
+            row=0, column=5)
+
+
+        # Костыль шоб робило
+        ttk.Label(frame,
+                  text="").grid(column=0, row=0, padx=65, pady=65)
