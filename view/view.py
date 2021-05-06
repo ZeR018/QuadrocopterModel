@@ -39,10 +39,11 @@ class View:
         frame.pack()
 
         widgets = Widgets(self, frame)
-        self._set_default_values
+        self._set_default_values()
 
 
     def _set_default_values(self):
+
         self.var_k11.set(-1.0)
         self.var_k22.set(-1.0)
         self.var_k33.set(-1.0)
@@ -53,10 +54,13 @@ class View:
         self.var_x.set(0)
         self.var_y.set(0)
         self.var_z.set(0)
-        self.var_phi.set(0)
-        self.var_tetha.set(0)
-        self.var_psi.set(0)
-        self.var_dt.set(1)
+        self.var_phi.set(-15.0)
+        self.var_tetha.set(30.0)
+        self.var_psi.set(10.0)
+        self.var_dt.set(0.1)
+        self.var_P4.set(2.0)
+        self.var_m.set(0.055)
+        self.var_L.set(0.05)
 
         # Для управления табами
     def _create_tabs(self):
@@ -77,9 +81,63 @@ class View:
         # Второй фрейм
         params = ParamsForm(self, inicialTab)
 
+    def _get_initial_params(self):
+        try: x = float(self.var_x.get())
+        except Exception: raise Exception("Variable 'x' should be float")
+        try: y = float(self.var_y.get())
+        except Exception: raise Exception("Variable 'y' should be float")
+        try: z = float(self.var_z.get())
+        except Exception: raise Exception("Variable 'z' should be float")
+
+        try: phi = float(self.var_phi.get())
+        except Exception: raise Exception("Variable 'phi' should be float")
+        try: tetha = float(self.var_tetha.get())
+        except Exception: raise Exception("Variable 'tetha' should be float")
+        try: psi = float(self.var_psi.get())
+        except Exception: raise Exception("Variable 'psi' should be float")
+
+        try: P4 = float(self.var_P4.get())
+        except Exception: raise Exception("Variable 'P4' should be float")
+
+        try: m = float(self.var_m.get())
+        except Exception: raise Exception("Variable 'm' should be float")
+        if m <= 0:
+            raise Exception("m should be more than 0")
+
+        try: L = float(self.var_L.get())
+        except Exception: raise Exception("Variable 'L' should be float")
+        if L <= 0:
+            raise Exception("L should be more than 0")
+
+        try: dt = float(self.var_dt.get())
+        except Exception: raise Exception("Variable 'dt' should be float")
+        if dt <= 0:
+            raise Exception("dt should be more than 0")
+
+        return (x, y, z, phi, tetha, psi, P4, m, L, dt)
+
+    def _get_stabilization_params(self):
+        try: k11 = float(self.var_k11.get())
+        except Exception: raise Exception("Variable 'k11' should be float")
+        try: k22 = float(self.var_k22.get())
+        except Exception: raise Exception("Variable 'k22' should be float")
+        try: k33 = float(self.var_k33.get())
+        except Exception: raise Exception("Variable 'k33' should be float")
+        try: k14 = float(self.var_k14.get())
+        except Exception: raise Exception("Variable 'k14' should be float")
+        try: k25 = float(self.var_k25.get())
+        except Exception: raise Exception("Variable 'k25' should be float")
+        try: k36 = float(self.var_k36.get())
+        except Exception: raise Exception("Variable 'k36' should be float")
+
+        return (k11, k22, k33, k14, k25, k36)
+
+
 
     def _save_params(self):
-        print('save params')
+        self.stabilization_params = self._get_stabilization_params()
+        self.initial_params = self._get_initial_params()
+        #self.graphic = self._get_graphic()
 
 
     def _click_button_start(self):
@@ -89,6 +147,7 @@ class View:
             self.button_stop.config(state=tk.NORMAL)
             self.button_show.config(state=tk.DISABLED)
             print('start')
+            self.controller.start_model(self.stabilization_params, self.initial_params)
         except Exception as e:
             showerror("Error", str(e))
 
