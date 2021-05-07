@@ -35,7 +35,6 @@ class Controller:
 
         self.thread = threading.Thread(target=run_thread)
         self.thread.start()
-        print(self.result)
 
     def stop_model(self):
         if self.model:

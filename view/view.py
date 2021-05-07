@@ -146,7 +146,6 @@ class View:
             self.button_start.config(state=tk.DISABLED)
             self.button_stop.config(state=tk.NORMAL)
             self.button_show.config(state=tk.DISABLED)
-            print('start')
             self.controller.start_model(self.stabilization_params, self.initial_params)
         except Exception as e:
             showerror("Error", str(e))
@@ -168,4 +167,74 @@ class View:
         self.ax.grid()
 
     def _show_result(self):
-        print('show result')
+        self._create_ax()
+        t_arr, res = self.controller.result
+        k11, k22, k33, k14, k25, k36 = self.stabilization_params
+        x, y, z, phi, tetha, psi, P4, m, L, dt = self.initial_params
+        K = np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, k11, 0.0, 0.0, k14, 0.0, 0.0],
+                      [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, k22, 0.0, 0.0, k25, 0.0],
+                      [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, k33, 0.0, 0.0, k36]])
+
+        u = K@res
+        P1 = 3 * P4 / 2 - (u[1] + u[2]) / 2
+        P2 = (P4 - (u[0] + u[1]) / 2)
+        P3 = 3 * P4 / 2 - (u[0] + u[2]) / 2
+
+        self.selected_graphic = self.var_graphic.get()
+
+        if(self.selected_graphic == 'coords'):
+            self.ax.plot(t_arr, res[0], label="$x$")
+            self.ax.plot(t_arr, res[1], label="$y$")
+            self.ax.plot(t_arr, res[2], label="$z$")
+            self.ax.grid()
+            self.ax.legend()
+            self.ax.set_xlabel("$t$")
+            self.canvas.draw()
+
+
+        elif(self.selected_graphic == 'speeds'):
+            self.ax.plot(t_arr, res[3], label="$Vx$")
+            self.ax.plot(t_arr, res[4], label="$Vy$")
+            self.ax.plot(t_arr, res[5], label="$Vz$")
+            self.ax.grid()
+            self.ax.legend()
+            self.ax.set_xlabel("$t$")
+            self.canvas.draw()
+
+        elif (self.selected_graphic == 'angles'):
+            self.ax.plot(t_arr, res[6], label="$Phi$")
+            self.ax.plot(t_arr, res[7], label="$Theta$")
+            self.ax.plot(t_arr, res[8], label="$Psi$")
+            self.ax.grid()
+            self.ax.legend()
+            self.ax.set_xlabel("$t$")
+            self.canvas.draw()
+
+        elif (self.selected_graphic == 'angle_speeds'):
+            self.ax.plot(t_arr, res[9], label="$Wx$")
+            self.ax.plot(t_arr, res[10], label="$Wy$")
+            self.ax.plot(t_arr, res[11], label="$Wz$")
+            self.ax.grid()
+            self.ax.legend()
+            self.ax.set_xlabel("$t$")
+            self.canvas.draw()
+
+
+        elif (self.selected_graphic == 'voltage'):
+            self.ax.plot(t_arr, u[0], label="$Ux$")
+            self.ax.plot(t_arr, u[1], label="$Uy$")
+            self.ax.plot(t_arr, u[2], label="$Uz$")
+            self.ax.grid()
+            self.ax.legend()
+            self.ax.set_xlabel("$t$")
+            self.canvas.draw()
+
+        elif (self.selected_graphic == 'power'):
+            self._create_ax()
+            self.ax.plot(t_arr, P1, label="$P1$")
+            self.ax.plot(t_arr, P2, label="$P2$")
+            self.ax.plot(t_arr, P3, label="$P3$")
+            self.ax.grid()
+            self.ax.legend()
+            self.ax.set_xlabel("$t$")
+            self.canvas.draw()

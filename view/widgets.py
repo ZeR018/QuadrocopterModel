@@ -27,7 +27,7 @@ class Widgets:
 
     def _create_graphics_selection_buttons(self, master):
         self.view.var_graphic = tk.StringVar()
-        self.view.var_graphic.set("Graphic 1")
+        self.view.var_graphic.set("coords")
 
         radio_coords = tk.Radiobutton(master, text="Coords", font=15,
             variable=self.view.var_graphic, value="coords", padx=10, pady=5)
