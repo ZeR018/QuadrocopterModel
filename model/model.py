@@ -30,8 +30,6 @@ def model(x0, y0, z0, phi0, theta0, psi0, P4, m, L, dt, k11, k22, k33, k14, k25,
         g = 9.8
         x, y, z, vx, vy, vz, phi, theta, psi, Wx, Wy, Wz = V
 
-        V1 = np.array([x, y, z, vx, vy, vz, phi, theta, psi, Wx, Wy, Wz]).transpose()
-
         # x   y     z    vx   vy   vz  ph     th   ps   wx    wy   wz
         K = np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, k11, 0.0, 0.0, k14, 0.0, 0.0],
                       [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, k22, 0.0, 0.0, k25, 0.0],
@@ -45,7 +43,7 @@ def model(x0, y0, z0, phi0, theta0, psi0, P4, m, L, dt, k11, k22, k33, k14, k25,
         Iy = (m * L ** 2.0) / 6.0
         Iz = (m * L ** 2.0) / 3.0
 
-        u = K @ ((1 + (0.5 - random.random())) * V1) + K1 @ ((1 + (0.5 - random.random())) * V1)
+        u = K @ ((1 + (0.5 - random.random())) * V) + K1 @ ((1 + (0.5 - random.random())) * V)
 
         P1 = 3 * P4 / 2 - (u[1] + u[2]) / 2
         P2 = P4 - (u[0] + u[1]) / 2
