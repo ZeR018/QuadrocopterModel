@@ -43,11 +43,11 @@ def model(x0, y0, z0, phi0, theta0, psi0, P4, m, L, dt, k11, k22, k33, k14, k25,
         Iy = (m * L ** 2.0) / 6.0
         Iz = (m * L ** 2.0) / 3.0
 
-        u = K @ ((1 + (0.5 - random.random())) * V) + K1 @ ((1 + (0.5 - random.random())) * V)
+        u = K @ V + K1 @ V
 
-        P1 = 3 * P4 / 2 - (u[1] + u[2]) / 2
+        P1 = P4 - (u[1] + u[2]) / 2
         P2 = P4 - (u[0] + u[1]) / 2
-        P3 = 3 * P4 / 2 - (u[0] + u[2]) / 2
+        P3 = P4 - (u[0] + u[2]) / 2
 
         fx = vx
         fy = vy
