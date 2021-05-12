@@ -45,8 +45,8 @@ class Widgets:
             variable=self.view.var_graphic, value="angle_speeds", padx=10, pady=5)
         radio_angle_speeds.place(relx=0.41, rely=0.03)
 
-        radio_voltage = tk.Radiobutton(master, text="Voltage", font=15,
-            variable=self.view.var_graphic, value="voltage", padx=10, pady=5)
+        radio_voltage = tk.Radiobutton(master, text="Management", font=15,
+            variable=self.view.var_graphic, value="management", padx=10, pady=5)
         radio_voltage.place(relx=0.41, rely=0.33)
 
         radio_power = tk.Radiobutton(master, text="Power", font=15,

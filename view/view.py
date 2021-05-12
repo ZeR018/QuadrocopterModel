@@ -220,7 +220,7 @@ class View:
             self.canvas.draw()
 
 
-        elif (self.selected_graphic == 'voltage'):
+        elif (self.selected_graphic == 'management'):
             self.ax.plot(t_arr, u[0], label="$Ux$")
             self.ax.plot(t_arr, u[1], label="$Uy$")
             self.ax.plot(t_arr, u[2], label="$Uz$")
